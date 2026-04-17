@@ -425,20 +425,20 @@ function init() {
     // Capturar parámetros de la URL (ZIA los inyecta automáticamente)
     const params = new URLSearchParams(window.location.search);
     const blockedUrl = params.get("url") || document.referrer || "No disponible";
-    const userEmail = params.get("user") || "";  // ← Este es el parámetro que ZIA ya te envía
+    const userEmail = params.get("user") || "";  // ZIA ya envía el email del usuario
     
     // Actualizar las URLs bloqueadas en ambos idiomas
     document.getElementById("blocked-url-en").textContent = blockedUrl;
     document.getElementById("blocked-url-es").textContent = blockedUrl;
     
-    // 🔥 NUEVO: Pre-llenar el email automáticamente si ZIA lo proporcionó
+    // Pre-llenar el email automáticamente si ZIA lo proporcionó
     if (userEmail && userEmail !== "") {
-        // Buscar todos los campos de email (en inglés y español)
         const emailFields = document.querySelectorAll('#user-email');
         emailFields.forEach(field => {
             field.value = userEmail;
-            field.readOnly = true;  // Opcional: evitar que el usuario lo cambie
-            field.style.backgroundColor = "#f0f0f0";  // Fondo gris claro para indicar que es automático
+            field.readOnly = false;
+            field.style.backgroundColor = "#f5f5f5";
+            field.style.color = "#555";
         });
     }
 }
