@@ -1,359 +1,613 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Acceso bloqueado — Solicitar permiso</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta name="description" content="Zscaler - Solicitud de acceso a sitios bloqueados">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acceso bloqueado - Solicitar permiso | Zscaler</title>
+<style type="text/css">
+body {
+background-color:#e3e3e3;
+font-family:Arial, sans-serif;
+font-size:12px;
+color:#4B4F54;
+}
+a {
+cursor:pointer;
+text-decoration:none;
+color:#009dd0;
+}
+table {
+margin-top:10px;
+}
+td table {
+margin-top:0;
+text-align:center;
+}
+img {
+max-height:75px;
+max-width:430px;
+}
+.pg {
+position:absolute;
+top:0;
+bottom:0;
+left:0;
+right:0;
+overflow-x:hidden;
+white-space:nowrap;
+}
+.pg:before {
+content:"";
+display:inline-block;
+height:100%;
+vertical-align:middle;
+}
+.pg_cont {
+display:inline-block;
+vertical-align:middle;
+width:100%;
+position:relative;
+}
+.a_i {
+width:19px;
+height:19px;
+margin-right:10px;
+background-size: 19px 19px;
+display:inline-block;
+}
+.m_tbl {
+width:100%;
+max-width:758px;
+background:#e3e3e3;
+min-width:600px;
+}
+.pg.red .eu_h {
+color:#fd4239;
+border-top:3px solid #fd4239;
+}
+.pg.red .eu_h .a_i {
+background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAABoElEQVR4nK3Uz2vIYRzA8dcMzWGJdjSZKZLCDphfB7XVHBAXF2XFpJxd+BvUbtY20m4KxVExtbWkUYQLByU3OVhpy8zh+Tzr2dN3t30un1/P834+z/N8noc1lBZYPNVbx3twDQPYFuN+4RUm8ARL5YTWFzPWVZA2jGIWQ+jMC2ILzuERZrCjrmB9YW/CcxwLfwFTAf6J3TiPzTiMNziJz02wkQL0DpfwsVp8OCAb0IFnOIA5LG/zeEwWgN4GUBeeBihLN25mJ8NuhF7CIOYbQJPYHv59fAv7OlpL2OnQH2IbpexsAF3BePgdOFTC2kO/bQC9LED3AvTPymPoYuUFkHqprqizAF0NECwWY9vKynJi1yqg8QoEBwv7ewmbCt2HIw2goQrUgv6wF6QmXoY9KMqdLkBjDSDSueU3+Bi/S9gE3oedY2PS+6xBF3En7Hnczol8AX9xAa+xNWJHpXOajXwPzuBsAR7E1xoGX3BC6vJu7MVdzfIHl/GwDNa/xifsxy1xQ5XMSS2ypwax+n+Wc/ukr2YjfkhNXT81pP9sTeU/6YpejkX0NUMAAAAASUVORK5CYII=');
+}
+.pg.red .eu_h, .pg.red .eu_co, .pg.red .hr {
+border-left:3px solid #fd4239;
+border-right:3px solid #fd4239;
+}
+.pg.red .fo {
+border-bottom-color:#fd4239;
+}
+.pg.red .eu_co.st{
+border:0;
+}
+.m_tbl table td {
+padding:0 20px 16px 20px;
+text-align:left;
+background-color:white;
+}
+.m_tbl table td.bh {
+text-align:center;
+background-color:#e3e3e3;
+z-index:100;
+}
+.m_tbl table td.eu_h {
+padding-top: 20px;
+}
+.eu_h {
+vertical-align:middle;
+font-weight:normal;
+white-space:normal;
+font-size: 24px;
+background-color:white;
+border-left:3px solid;
+border-right:3px solid;
+border-top-left-radius: 10px;
+border-top-right-radius: 10px;
+}
+.eu_co {
+font-size:16px;
+color:#2a2c30;
+border-left:3px solid;
+border-right:3px solid;
+white-space: normal;
+word-wrap: break-word;
+}
+.eu_co.fo {
+height:auto;
+min-height:32px;
+color:#696A6D;
+background-color:#f3f3f3;
+line-height:32px;
+font-size:11px;
+padding-bottom:10px;
+border-bottom:3px solid;
+border-bottom-left-radius:10px;
+border-bottom-right-radius:10px;
+}
+.eu_co.st {
+font-size: 12px;
+padding: 10px 0;
+line-height: 20px;
+position: relative;
+color: #939393;
+background:#e3e3e3;
+border:0;
+text-align: center;
+}
+.s_img {
+vertical-align:top;
+padding-right:5px;
+background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAAMCAYAAAAzmK6YAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTExIDc5LjE1ODMyNSwgMjAxNS8wOS8xMC0wMToxMDoyMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MDg4M0FBNkZBODFFMTFFNUI3RkJGMDcxMjM1MjFGQjUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDg4M0FBNzBBODFFMTFFNUI3RkJGMDcxMjM1MjFGQjUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowODgzQUE2REE4MUUxMUU1QjdGQkYwNzEyMzUyMUZCNSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowODgzQUE2RUE4MUUxMUU1QjdGQkYwNzEyMzUyMUZCNSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PkDA4BkAAANHSURBVHja1JZpSBVhFIaveevaQpGRqaVkC5UWSiutkCVtRlaWtlhRli3+CPtREBFFBUULoVBhEYVYtEALEgZmC4ZEJBFEciuznVKIdjW098BzZbqo+c/64HGcmW++Oed873nnBjQ0NLhs5OTkuJoY8WK5GCn6CI94K26Io+K+6x8ZmZmZLd53+51bMtGiXswXax33noqzokh8FJ/aOLcBxPm8NZPd7GZnHXaLZaK735wf4oJ4IdqLUHGzjZO0OArEF9T21xGQnZ3tIZHEZuZY1b6LR2IvCY8WE0WEqBGPxUVR4nhukujL83X2LlEh7ok5Ik68F1doB1+rjBNV4hL3O4kkMYh5l0UHUSnyRJoYIyazKVcl48Zd1ibavTBLNIN+a258FltYdIVYSUXtehBS9zB3s9jH/ydEMhKPINGD9lIxTbwRw8QzMZwiWqtUix5Ici7rDCGxaIp5TJwWS0VvnrV26kkxRhBjHgUvaac/i1pI8rWYKo6ICSQ3Wwyl8hZglBWO+Sb/GP5fQ8Db2dXzwsv7TEFTRCpKyCTJdRRlFV5gwW4TY8USUS66ivHiJ3MtyR0ikneFiwSSNFmnmCJsR58gC/9RzQNlrewb25l+YrE4w7VNYr84LDaKWBKwAnwT18QukSu6NRGHyXuro3i2sycpboiw2OfRVr9YwzwkG3VlScaHfGZU3kyiWY4kB4uZ9GYves5c+DbHGSRZKx6KQF6WhtxPOdY1OfanT5NZz86LHXNCkHgRMaRwXihe4Se3xED6Pp3WiCCG6axT7HTdA2IWwfnGHXogCjksFB39CpGA1Hyjgl72Yhi25nURzK6Y7K26D8QGkkliV0OR8mp2MRkzCsboInnWVPOSXrzLMYZet4KtRyFxKNLb6Lr2g0HOlMpCoVy3Pvog8lmgpVGJQZmbfuWlBbhxIK7ppo/MODJwTTOP42KPWECvheHqO9m9c2IUPV5KL8dT0EQ+hbmo6R1ml8/nr1SyTf8jUWw4HL2HYBCFrUjSi6zK/L7NboLzjXaYh4vggqh4rWOOfcu7UOAGx/VQnvX9QAni6FvPw5rVSqxOeQQwp0bn9U0l6p9ELK7lwXnjcLw6ql7AZ6nqf/gJ+FuAAQDyhegdUpDo7QAAAABJRU5ErkJggg==") no-repeat;
+width:55px;
+height:17px;
+position:relative;
+top:3px;
+display:inline-block;
+}
+.uq_cd {
+position:absolute;
+bottom:54px;
+right:25px;
+font-size:10px;
+color:#696A6D;
+}
+.s_l td {
+font-size: 13px;
+color: #77797c;
+text-align:right;
+}
+.s_l a {
+padding:4px;
+cursor:pointer;
+font-size:13px;
+}
+.s_l .sprt {
+margin-left: 6px;
+margin-right: 4px;
+padding-right: 0;
+cursor: default;
+height: 14px;
+border-left: 1px #cfd0d1 solid;
+}
+.langSelector{
+width:200px;
+}
+.langSelector td{
+text-align:right;
+}
+.logo_container{
+position:relative;
+max-width:758px;
+margin:0px auto;
+}
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f4f5f7;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-      color: #1a1a1a;
+/* ========== ESTILOS DEL FORMULARIO ========== */
+.form-container {
+    padding: 20px 0 10px 0;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 5px;
+}
+.form-group input, 
+.form-group textarea, 
+.form-group select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+}
+.form-group input:focus, 
+.form-group textarea:focus, 
+.form-group select:focus {
+    outline: none;
+    border-color: #009dd0;
+}
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+.btn-submit {
+    background: #009dd0;
+    color: #FFFFFF;
+    border-radius: 5px;
+    border: 2px solid #009dd0;
+    cursor: pointer;
+    display: inline-block;
+    height: 40px;
+    margin: 10px 0 15px;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 36px;
+    width: 100%;
+    padding: 0 20px;
+    text-align: center;
+}
+.btn-submit:hover {
+    background: #fff;
+    color: #0076A9;
+}
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.msg {
+    display: none;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 13px;
+}
+.msg.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.msg.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.blocked-url-info {
+    background: #f8f8f8;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-size: 13px;
+    word-break: break-all;
+}
+.blocked-url-info strong {
+    color: #fd4239;
+}
+.fallback-note {
+    font-size: 11px;
+    color: #888;
+    text-align: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+/* ========== FIN ESTILOS FORMULARIO ========== */
+
+@media only screen and (max-width:700px) {
+td.bh{
+padding-bottom:35px;
+}
+.eu_h{
+font-size:18px;
+}
+.eu_h,.eu_co,.st{
+word-wrap:break-word;
+white-space:normal;
+}
+.fo{
+padding:2px 0;
+height:auto;
+line-height:20px;
+}
+.m_tbl {
+min-width: 300px;
+width: 95%;
+position:relative;
+left:-3px;
+}
+.uq_cd {
+bottom: 77px;
+}
+.a_i {
+position: relative;
+top: 4px;
+}
+.s_l {
+position: absolute;
+top:85px;
+width:100%;
+z-index:100;
+}
+.s_l a {
+padding: 0;
+}
+.m_tbl table .s_l td {
+text-align: center;
+}
+.pg{
+overflow-y:auto;
+}
+.langSelector{
+width:100%;
+}
+.langSelector td{
+text-align:center;
+}
+}
+</style>
+<script language="JavaScript">
+// =====================================================
+// CONFIGURACIÓN — CAMBIA ESTO SEGÚN TU EMPRESA
+// =====================================================
+const TI_EMAIL = "jcarias@quattro.com.gt";      // ← Email del equipo de TI
+const CORREO_PREDETERMINADO = "outlook";        // "outlook", "gmail", o "generic"
+const ALLOWED_DOMAINS = ["quattro.com.gt", "quattro.com.sv","s4latam.com"]; // ← Dominios corporativos
+// =====================================================
+
+var defLang = 'es_ES';
+
+function changeLanguage(id) {
+    if (document.getElementById("en_US")) document.getElementById("btn_en_US").style.color="#009dd0";
+    if (document.getElementById("es_ES")) document.getElementById("btn_es_ES").style.color="#009dd0";
+    if (document.getElementById("btn_"+id)) {document.getElementById("btn_"+id).style.color="#77797c"; }
+    if (document.getElementById(id)) {
+        if (document.getElementById("en_US")) document.getElementById("en_US").style.display="none";
+        if (document.getElementById("es_ES")) document.getElementById("es_ES").style.display="none";
+        document.getElementById(id).style.display="";
     }
+    defLang = id;
+}
 
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      border: 0.5px solid #e0e0e0;
-      padding: 2.5rem 2rem;
-      max-width: 480px;
-      width: 100%;
+function showLangSelector() {
+    var langNode = document.getElementById("langSelector");
+    var pageNode = document.getElementById("logo_container");
+    if(!!langNode){
+        if (langNode.parentNode) {
+            langNode = langNode.parentNode.removeChild(langNode);
+            var logoNode = document.getElementById("logo");
+            pageNode.insertBefore(langNode, logoNode);
+        }
+        langNode.style.display="";
+        changeLanguage(defLang);
     }
+}
 
-    .icon-block {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      background: #fff3f3;
-      border: 0.5px solid #f7c1c1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.25rem;
-    }
+function init() {
+    showLangSelector();
+    // Detectar URL bloqueada desde query param
+    const params = new URLSearchParams(window.location.search);
+    const blockedUrl = params.get("url") || params.get("blocked_url") || document.referrer || "No disponible";
+    
+    // Actualizar ambos idiomas con la URL bloqueada
+    document.getElementById("blocked-url-en").textContent = blockedUrl;
+    document.getElementById("blocked-url-es").textContent = blockedUrl;
+}
 
-    .icon-block svg { width: 26px; height: 26px; }
+if (typeof(defLang) == "string") {
+    if (window.addEventListener)
+        addEventListener("load",init,false);
+    else if (window.attachEvent)
+        attachEvent("onload",init);
+}
 
-    h1 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-      color: #1a1a1a;
-    }
-
-    .subtitle {
-      font-size: 14px;
-      color: #666;
-      line-height: 1.6;
-      margin-bottom: 1.75rem;
-    }
-
-    .info-row {
-      background: #f8f8f8;
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      font-size: 13px;
-      margin-bottom: 1.5rem;
-      color: #444;
-      word-break: break-all;
-    }
-
-    .info-row span { color: #888; display: block; font-size: 12px; margin-bottom: 2px; }
-
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: #444;
-      margin-bottom: 0.4rem;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 0.6rem 0.75rem;
-      border: 0.5px solid #d0d0d0;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: inherit;
-      color: #1a1a1a;
-      background: #fff;
-      margin-bottom: 1rem;
-      transition: border-color 0.15s;
-      outline: none;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      border-color: #888;
-    }
-
-    textarea { resize: vertical; min-height: 90px; }
-
-    button {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      background: #1a1a1a;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s, opacity 0.15s;
-    }
-
-    button:hover { background: #333; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .msg {
-      display: none;
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      font-size: 14px;
-      margin-top: 1rem;
-    }
-
-    .msg.success { background: #eaf3de; color: #3b6d11; border: 0.5px solid #c0dd97; }
-    .msg.error   { background: #fcebeb; color: #a32d2d; border: 0.5px solid #f7c1c1; }
-
-    .divider {
-      border: none;
-      border-top: 0.5px solid #ebebeb;
-      margin: 1.5rem 0;
-    }
-
-    .outlook-note {
-      font-size: 12px;
-      color: #888;
-      text-align: center;
-      margin-top: 1rem;
-      background: #fafafa;
-      padding: 0.5rem;
-      border-radius: 6px;
-    }
-
-    .outlook-note a {
-      color: #1a1a1a;
-    }
-  </style>
-</head>
-<body>
-
-<div class="card">
-
-  <div class="icon-block">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#e24b4a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"/>
-      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
-    </svg>
-  </div>
-
-  <h1>Sitio bloqueado por política de seguridad</h1>
-  <p class="subtitle">
-    Este sitio está restringido por las políticas de tu organización.
-    Si necesitas acceso por razones de trabajo, completa el formulario y
-    tu solicitud será revisada por el equipo de TI.
-  </p>
-
-  <div class="info-row" id="blocked-url-box">
-    <span>URL bloqueada</span>
-    <strong id="blocked-url">—</strong>
-  </div>
-
-  <hr class="divider" />
-
-  <form id="access-form" novalidate>
-
-    <label for="user-name">Tu nombre completo</label>
-    <input type="text" id="user-name" name="user_name" placeholder="Juan Pérez" required />
-
-    <label for="user-email">Tu correo corporativo</label>
-    <input type="email" id="user-email" name="user_email" placeholder="juan.perez@tuempresa.com" required />
-
-    <label for="business-reason">Motivo de negocio</label>
-    <textarea id="business-reason" name="business_reason" placeholder="Describe por qué necesitas acceso a este sitio…" required></textarea>
-
-    <label for="urgency">Urgencia</label>
-    <select id="urgency" name="urgency">
-      <option value="Normal">Normal — puede esperar 1-2 días</option>
-      <option value="Alta">Alta — lo necesito hoy</option>
-      <option value="Crítica">Crítica — bloqueando trabajo activo</option>
-    </select>
-
-    <button type="submit" id="submit-btn">Abrir correo y enviar solicitud</button>
-
-  </form>
-
-  <div class="msg success" id="msg-success">
-    ✅ Se ha abierto tu cliente de correo. Solo debes revisar que todo esté correcto y hacer clic en Enviar.
-  </div>
-  <div class="msg error" id="msg-error">
-    ❌ No se pudo abrir el cliente de correo. Copia el texto abajo y envíalo manualmente a <strong>soporte@tuempresa.com</strong>
-  </div>
-
-  <div class="outlook-note" id="fallback-text" style="display: none;">
-    <p>📋 <strong>Texto para copiar:</strong></p>
-    <div style="background:#f0f0f0; padding:8px; border-radius:6px; font-size:11px; text-align:left; word-break:break-all;" id="fallback-content"></div>
-    <p style="margin-top:8px;">✉️ Enviar a: <strong>soporte@tuempresa.com</strong></p>
-  </div>
-
-</div>
-
-<script>
-  // =====================================================
-  // CONFIGURACIÓN — CAMBIA ESTO SEGÚN TU EMPRESA
-  // =====================================================
-  const TI_EMAIL = "jcarias@quattro.com.gt";      // ← Cambiar por el email real de TI
-  const CORREO_PREDETERMINADO = "outlook";        // "outlook" o "gmail" o "mac" o "generic"
-  // =====================================================
-
-  // Detectar URL bloqueada desde query param (ZIA la inyecta automáticamente)
-  const params = new URLSearchParams(window.location.search);
-  const blockedUrl = params.get("url") || params.get("blocked_url") || document.referrer || "No disponible";
-  document.getElementById("blocked-url").textContent = blockedUrl;
-
-  // Función para obtener el cliente de correo según preferencia
-  function getMailtoLink(to, subject, body) {
+// Función para obtener el enlace de correo según preferencia
+function getMailtoLink(to, subject, body) {
     const encodedSubject = encodeURIComponent(subject);
     const encodedBody = encodeURIComponent(body);
-    
     switch(CORREO_PREDETERMINADO) {
-      case "outlook":
-        return `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(to)}&subject=${encodedSubject}&body=${encodedBody}`;
-      case "gmail":
-        return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodedSubject}&body=${encodedBody}`;
-      case "mac":
-        return `mailto:${to}?subject=${encodedSubject}&body=${encodedBody}`;
-      default:
-        return `mailto:${to}?subject=${encodedSubject}&body=${encodedBody}`;
+        case "outlook":
+            return `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(to)}&subject=${encodedSubject}&body=${encodedBody}`;
+        case "gmail":
+            return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodedSubject}&body=${encodedBody}`;
+        default:
+            return `mailto:${to}?subject=${encodedSubject}&body=${encodedBody}`;
     }
-  }
+}
 
-  document.getElementById("access-form").addEventListener("submit", function(e) {
-    e.preventDefault();
-
+function submitRequest() {
+    // Obtener valores del formulario activo (según idioma)
     const name = document.getElementById("user-name").value.trim();
     const email = document.getElementById("user-email").value.trim();
     const reason = document.getElementById("business-reason").value.trim();
     const urgency = document.getElementById("urgency").value;
-
+    
+    // Detectar URL bloqueada
+    const params = new URLSearchParams(window.location.search);
+    const blockedUrl = params.get("url") || params.get("blocked_url") || document.referrer || "No disponible";
+    
     // Validaciones
     if (!name || !email || !reason) {
-      const errorMsg = document.getElementById("msg-error");
-      errorMsg.textContent = "❌ Por favor completa todos los campos.";
-      errorMsg.style.display = "block";
-      document.getElementById("msg-success").style.display = "none";
-      document.getElementById("fallback-text").style.display = "none";
-      return;
+        const errorMsg = document.getElementById("msg-error");
+        errorMsg.textContent = defLang === 'es_ES' ? "❌ Por favor completa todos los campos." : "❌ Please complete all fields.";
+        errorMsg.style.display = "block";
+        document.getElementById("msg-success").style.display = "none";
+        return;
     }
-
-    // Validar dominio corporativo (opcional pero recomendado)
-    const allowedDomains = ["quattro.com.gt", "quattro.com.sv","s4latam.com"]; // ← CAMBIAR
+    
+    // Validar dominio corporativo
     const emailDomain = email.split("@")[1];
-    if (!allowedDomains.includes(emailDomain)) {
-      const errorMsg = document.getElementById("msg-error");
-      errorMsg.textContent = "❌ Usa tu correo corporativo (@tuempresa.com)";
-      errorMsg.style.display = "block";
-      document.getElementById("msg-success").style.display = "none";
-      document.getElementById("fallback-text").style.display = "none";
-      return;
+    if (!ALLOWED_DOMAINS.includes(emailDomain)) {
+        const errorMsg = document.getElementById("msg-error");
+        errorMsg.textContent = defLang === 'es_ES' ? "❌ Usa tu correo corporativo (@tuempresa.com)" : "❌ Use your corporate email (@yourcompany.com)";
+        errorMsg.style.display = "block";
+        document.getElementById("msg-success").style.display = "none";
+        return;
     }
-
+    
     const now = new Date().toLocaleString("es-GT", { timeZone: "America/Guatemala" });
     
-    // Construir el cuerpo del correo
+    // Construir cuerpo del correo
+    const urgencyText = urgency === "Normal" ? (defLang === 'es_ES' ? "Normal - puede esperar 1-2 días" : "Normal - can wait 1-2 days") :
+                        urgency === "Alta" ? (defLang === 'es_ES' ? "Alta - lo necesito hoy" : "High - needed today") :
+                        (defLang === 'es_ES' ? "Crítica - bloqueando trabajo activo" : "Critical - blocking active work");
+    
     const emailBody = `
 ===========================================
-SOLICITUD DE ACCESO A SITIO BLOQUEADO
+ZSCALER ACCESS REQUEST / SOLICITUD DE ACCESO
 ===========================================
 
-Fecha: ${now}
-Nombre: ${name}
-Correo: ${email}
-Urgencia: ${urgency}
-URL bloqueada: ${blockedUrl}
+Date/Fecha: ${now}
+Name/Nombre: ${name}
+Email/Correo: ${email}
+Urgency/Urgencia: ${urgencyText}
+Blocked URL/URL bloqueada: ${blockedUrl}
 
-MOTIVO DE NEGOCIO:
+BUSINESS REASON / MOTIVO DE NEGOCIO:
 ${reason}
-
 -------------------------------------------
+This message was generated automatically.
 Este mensaje fue generado automáticamente.
-Por favor, revisar si procede desbloquear el sitio.
 ===========================================
     `.trim();
-
-    const subject = `[Zscaler] Solicitud de acceso - ${name} - ${blockedUrl.substring(0, 60)}`;
     
-    // Intentar abrir el cliente de correo
+    const subject = `[Zscaler] Access Request - ${name} - ${blockedUrl.substring(0, 50)}`;
+    
+    // Abrir cliente de correo
     const mailtoLink = getMailtoLink(TI_EMAIL, subject, emailBody);
-    
-    // Ocultar mensajes anteriores
-    document.getElementById("msg-error").style.display = "none";
-    document.getElementById("msg-success").style.display = "none";
-    document.getElementById("fallback-text").style.display = "none";
-    
-    // Intentar abrir el correo
     window.location.href = mailtoLink;
     
     // Mostrar mensaje de éxito
     document.getElementById("msg-success").style.display = "block";
+    document.getElementById("msg-error").style.display = "none";
     
-    // Opcional: guardar el cuerpo en el fallback por si no funciona
-    document.getElementById("fallback-content").innerHTML = emailBody.replace(/\n/g, '<br>');
-    
-    // Si después de 2 segundos el usuario no pudo abrir el correo, mostrar fallback
-    setTimeout(() => {
-      // Solo mostrar fallback si el usuario hace clic en algún lado
-      // (por simplicidad, lo dejamos disponible)
-    }, 200);
-    
-    // Limpiar formulario opcionalmente
+    // Opcional: limpiar formulario
     // document.getElementById("access-form").reset();
-    
-    // Mostrar opción de copiar texto por si acaso
-    setTimeout(() => {
-      const fallbackDiv = document.getElementById("fallback-text");
-      if (fallbackDiv.style.display !== "block") {
-        fallbackDiv.style.display = "block";
-        fallbackDiv.style.marginTop = "1rem";
-      }
-    }, 1000);
-  });
-  
-  // Función para copiar texto al portapapeles (mejora UX)
-  function copyFallbackText() {
-    const text = document.getElementById("fallback-content").innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      const copyBtn = document.getElementById("copy-btn");
-      if (copyBtn) {
-        const originalText = copyBtn.textContent;
-        copyBtn.textContent = "✓ Copiado!";
-        setTimeout(() => copyBtn.textContent = originalText, 2000);
-      }
-    });
-  }
-  
-  // Agregar botón de copiar dinámicamente si existe fallback
-  const observer = new MutationObserver(() => {
-    const fallback = document.getElementById("fallback-text");
-    if (fallback && fallback.style.display === "block" && !document.getElementById("copy-btn")) {
-      const btn = document.createElement("button");
-      btn.id = "copy-btn";
-      btn.textContent = "📋 Copiar texto";
-      btn.style.marginTop = "8px";
-      btn.style.background = "#666";
-      btn.onclick = copyFallbackText;
-      fallback.appendChild(btn);
-    }
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
+}
 </script>
+</head>
+<body>
+
+<div class="pg red">
+<div class="pg_cont">
+<div id="logo_container" class="logo_container">
+<table style="position: absolute; right: 0px; bottom: 0px;" id="langSelector" class="langSelector s_l" width="50%" border="0" align="center" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="font-size:12px; padding-bottom:4px">
+<a id="btn_en_US" onclick="changeLanguage('en_US')" style="color:#77797c;">English</a><span class="sprt"></span>
+<a id="btn_es_ES" onclick="changeLanguage('es_ES')" style="color:#009dd0;">Español</a>
+</td>
+</tr>
+</tbody>
+</table>
+<table id="logo" width="50%" cellspacing="0" cellpadding="0" border="0" align="center">
+<tbody>
+<tr align="center">
+<td align="center" class="bh">
+<img src="https://login.zscalertwo.net:443/__zsig/2SZnJRvTSq1jR" alt="Zscaler">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
+<tbody>
+<tr>
+<td height="100" valign="top" style="position:relative;">
+<div class="uq_cd">D24</div>
+
+<!--locale en_US-->
+<table id="en_US" width="100%" border="0" cellspacing="0" cellpadding="0" style="display: none;">
+<tbody>
+<tr><td class="eu_h"><i class="a_i"></i>Access to this site has been blocked</td></tr>
+<tr><td class="hr"><hr></td></tr>
+<tr><td class="eu_co rsn">This website is restricted by your organization's security policy</td></tr>
+<tr>
+<td class="eu_co">
+<div class="blocked-url-info">
+<strong>Blocked URL:</strong> <span id="blocked-url-en">—</span>
+</div>
+</td>
+</tr>
+<tr><td class="hr"><hr></td></tr>
+<tr>
+<td class="eu_co">
+<div class="form-container">
+<form id="access-form-en" onsubmit="event.preventDefault(); submitRequest();">
+<div class="form-group">
+<label>Full name</label>
+<input type="text" id="user-name" placeholder="John Doe" required>
+</div>
+<div class="form-group">
+<label>Corporate email</label>
+<input type="email" id="user-email" placeholder="john.doe@yourcompany.com" required>
+</div>
+<div class="form-group">
+<label>Business reason</label>
+<textarea id="business-reason" placeholder="Describe why you need access to this site..." required></textarea>
+</div>
+<div class="form-group">
+<label>Urgency</label>
+<select id="urgency">
+<option value="Normal">Normal — can wait 1-2 days</option>
+<option value="Alta">High — needed today</option>
+<option value="Crítica">Critical — blocking active work</option>
+</select>
+</div>
+<button type="submit" class="btn-submit">Send request</button>
+</form>
+<div class="msg success" id="msg-success">✓ Your request has been opened in your email client. Just review and send.</div>
+<div class="msg error" id="msg-error">❌ Please complete all fields correctly.</div>
+<div class="fallback-note">📧 The email will open in your default client. If it doesn't work, contact IT directly at <strong>jcarias@quattro.com.gt</strong></div>
+</div>
+</td>
+</tr>
+<tr><td class="eu_co fo">Need help? Contact our support team</td></tr>
+<tr><td class="eu_co st red"><span class="s_img"></span>Your organization has selected Zscaler to protect you from internet threats.</td></tr>
+</tbody>
+</table>
+
+<!--locale es_ES-->
+<table id="es_ES" width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr><td class="eu_h"><i class="a_i"></i>Lo sentimos. Esta página web no está autorizada.</td></tr>
+<tr><td class="hr"><hr></td></tr>
+<tr><td class="eu_co rsn">Este sitio está restringido por la política de seguridad de tu organización</td></tr>
+<tr>
+<td class="eu_co">
+<div class="blocked-url-info">
+<strong>URL bloqueada:</strong> <span id="blocked-url-es">—</span>
+</div>
+</td>
+</tr>
+<tr><td class="hr"><hr></td></tr>
+<tr>
+<td class="eu_co">
+<div class="form-container">
+<form id="access-form-es" onsubmit="event.preventDefault(); submitRequest();">
+<div class="form-group">
+<label>Tu nombre completo</label>
+<input type="text" id="user-name" placeholder="Nombre Completo" required>
+</div>
+<div class="form-group">
+<label>Tu correo corporativo</label>
+<input type="email" id="user-email" placeholder="@quattro.com.gt" required>
+</div>
+<div class="form-group">
+<label>Motivo de negocio</label>
+<textarea id="business-reason" placeholder="Describe por qué necesitas acceso a este sitio..." required></textarea>
+</div>
+<div class="form-group">
+<label>Urgencia</label>
+<select id="urgency">
+<option value="Normal">Normal — puede esperar 1-2 días</option>
+<option value="Alta">Alta — lo necesito hoy</option>
+<option value="Crítica">Crítica — bloqueando trabajo activo</option>
+</select>
+</div>
+<button type="submit" class="btn-submit">Enviar solicitud</button>
+</form>
+<div class="msg success" id="msg-success">✓ Tu solicitud se ha abierto en tu cliente de correo. Solo revisa y envía.</div>
+<div class="msg error" id="msg-error">❌ Por favor completa todos los campos correctamente.</div>
+<div class="fallback-note">📧 El correo se abrirá en tu cliente predeterminado. Si no funciona, contacta a TI directamente en <strong>jcarias@quattro.com.gt</strong></div>
+</div>
+</td>
+</tr>
+<tr><td class="eu_co fo">¿Necesita ayuda? Contacte con nuestro equipo de asistencia</td></tr>
+<tr><td class="eu_co st red"><span class="s_img"></span>Su compañía ha elegido a Zscaler para protegerle frente a las amenazas de Internet.</td></tr>
+</tbody>
+</table>
+
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
 </body>
 </html>
