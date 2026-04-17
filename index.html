@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso bloqueado — Solicitar permiso</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f5f7;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      color: #1a1a1a;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 0.5px solid #e0e0e0;
+      padding: 2.5rem 2rem;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .icon-block {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: #fff3f3;
+      border: 0.5px solid #f7c1c1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .icon-block svg { width: 26px; height: 26px; }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #1a1a1a;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
+    }
+
+    .info-row {
+      background: #f8f8f8;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 13px;
+      margin-bottom: 1.5rem;
+      color: #444;
+      word-break: break-all;
+    }
+
+    .info-row span { color: #888; display: block; font-size: 12px; margin-bottom: 2px; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #444;
+      margin-bottom: 0.4rem;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 0.5px solid #d0d0d0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #1a1a1a;
+      background: #fff;
+      margin-bottom: 1rem;
+      transition: border-color 0.15s;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #888;
+    }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    button {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+
+    button:hover { background: #333; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .msg {
+      display: none;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 14px;
+      margin-top: 1rem;
+    }
+
+    .msg.success { background: #eaf3de; color: #3b6d11; border: 0.5px solid #c0dd97; }
+    .msg.error   { background: #fcebeb; color: #a32d2d; border: 0.5px solid #f7c1c1; }
+
+    .divider {
+      border: none;
+      border-top: 0.5px solid #ebebeb;
+      margin: 1.5rem 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="icon-block">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#e24b4a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+    </svg>
+  </div>
+
+  <h1>Sitio bloqueado por política de seguridad</h1>
+  <p class="subtitle">
+    Este sitio está restringido por las políticas de tu organización.
+    Si necesitas acceso por razones de trabajo, completa el formulario y
+    tu solicitud será revisada por el equipo de TI.
+  </p>
+
+  <div class="info-row" id="blocked-url-box">
+    <span>URL bloqueada</span>
+    <strong id="blocked-url">—</strong>
+  </div>
+
+  <hr class="divider" />
+
+  <form id="access-form" novalidate>
+
+    <label for="user-name">Tu nombre completo</label>
+    <input type="text" id="user-name" name="user_name" placeholder="Juan Pérez" required />
+
+    <label for="user-email">Tu correo corporativo</label>
+    <input type="email" id="user-email" name="user_email" placeholder="juanperez@empresa.com" required />
+
+    <label for="business-reason">Motivo de negocio</label>
+    <textarea id="business-reason" name="business_reason" placeholder="Describe por qué necesitas acceso a este sitio…" required></textarea>
+
+    <label for="urgency">Urgencia</label>
+    <select id="urgency" name="urgency">
+      <option value="Normal">Normal — puede esperar 1-2 días</option>
+      <option value="Alta">Alta — lo necesito hoy</option>
+      <option value="Crítica">Crítica — bloqueando trabajo activo</option>
+    </select>
+
+    <button type="submit" id="submit-btn">Enviar solicitud</button>
+
+  </form>
+
+  <div class="msg success" id="msg-success">
+    Tu solicitud fue enviada. El equipo de TI te contactará pronto.
+  </div>
+  <div class="msg error" id="msg-error">
+    No se pudo enviar la solicitud. Intenta de nuevo o contacta a TI directamente.
+  </div>
+
+</div>
+
+<script>
+  // =====================================================
+  // CONFIGURACIÓN — edita estos 3 valores con los tuyos
+  // =====================================================
+  const EMAILJS_PUBLIC_KEY  = "TU_PUBLIC_KEY";      // en EmailJS: Account > API Keys
+  const EMAILJS_SERVICE_ID  = "TU_SERVICE_ID";      // en EmailJS: Email Services
+  const EMAILJS_TEMPLATE_ID = "TU_TEMPLATE_ID";     // en EmailJS: Email Templates
+  // =====================================================
+
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+
+  // Detectar URL bloqueada desde query param (ZIA la inyecta automáticamente)
+  const params = new URLSearchParams(window.location.search);
+  const blockedUrl = params.get("url") || params.get("blocked_url") || document.referrer || "No disponible";
+  document.getElementById("blocked-url").textContent = blockedUrl;
+
+  document.getElementById("access-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name    = document.getElementById("user-name").value.trim();
+    const email   = document.getElementById("user-email").value.trim();
+    const reason  = document.getElementById("business-reason").value.trim();
+    const urgency = document.getElementById("urgency").value;
+
+    if (!name || !email || !reason) {
+      document.getElementById("msg-error").textContent = "Por favor completa todos los campos.";
+      document.getElementById("msg-error").style.display = "block";
+      document.getElementById("msg-success").style.display = "none";
+      return;
+    }
+
+    const btn = document.getElementById("submit-btn");
+    btn.disabled = true;
+    btn.textContent = "Enviando…";
+
+    const templateParams = {
+      user_name:       name,
+      user_email:      email,
+      business_reason: reason,
+      urgency:         urgency,
+      blocked_url:     blockedUrl,
+      request_time:    new Date().toLocaleString("es-GT", { timeZone: "America/Guatemala" })
+    };
+
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+      .then(function() {
+        document.getElementById("msg-success").style.display = "block";
+        document.getElementById("msg-error").style.display   = "none";
+        document.getElementById("access-form").style.display = "none";
+        btn.disabled = false;
+        btn.textContent = "Enviar solicitud";
+      })
+      .catch(function(err) {
+        console.error("EmailJS error:", err);
+        document.getElementById("msg-error").textContent = "No se pudo enviar la solicitud. Intenta de nuevo o contacta a TI directamente.";
+        document.getElementById("msg-error").style.display = "block";
+        document.getElementById("msg-success").style.display = "none";
+        btn.disabled = false;
+        btn.textContent = "Enviar solicitud";
+      });
+  });
+</script>
+
+</body>
+</html>
