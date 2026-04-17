@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acceso bloqueado — Solicitar permiso</title>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -128,6 +127,20 @@
       border-top: 0.5px solid #ebebeb;
       margin: 1.5rem 0;
     }
+
+    .outlook-note {
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+      margin-top: 1rem;
+      background: #fafafa;
+      padding: 0.5rem;
+      border-radius: 6px;
+    }
+
+    .outlook-note a {
+      color: #1a1a1a;
+    }
   </style>
 </head>
 <body>
@@ -161,7 +174,7 @@
     <input type="text" id="user-name" name="user_name" placeholder="Juan Pérez" required />
 
     <label for="user-email">Tu correo corporativo</label>
-    <input type="email" id="user-email" name="user_email" placeholder="juanperez@empresa.com" required />
+    <input type="email" id="user-email" name="user_email" placeholder="juan.perez@tuempresa.com" required />
 
     <label for="business-reason">Motivo de negocio</label>
     <textarea id="business-reason" name="business_reason" placeholder="Describe por qué necesitas acceso a este sitio…" required></textarea>
@@ -173,80 +186,173 @@
       <option value="Crítica">Crítica — bloqueando trabajo activo</option>
     </select>
 
-    <button type="submit" id="submit-btn">Enviar solicitud</button>
+    <button type="submit" id="submit-btn">Abrir correo y enviar solicitud</button>
 
   </form>
 
   <div class="msg success" id="msg-success">
-    Tu solicitud fue enviada. El equipo de TI te contactará pronto.
+    ✅ Se ha abierto tu cliente de correo. Solo debes revisar que todo esté correcto y hacer clic en Enviar.
   </div>
   <div class="msg error" id="msg-error">
-    No se pudo enviar la solicitud. Intenta de nuevo o contacta a TI directamente.
+    ❌ No se pudo abrir el cliente de correo. Copia el texto abajo y envíalo manualmente a <strong>soporte@tuempresa.com</strong>
+  </div>
+
+  <div class="outlook-note" id="fallback-text" style="display: none;">
+    <p>📋 <strong>Texto para copiar:</strong></p>
+    <div style="background:#f0f0f0; padding:8px; border-radius:6px; font-size:11px; text-align:left; word-break:break-all;" id="fallback-content"></div>
+    <p style="margin-top:8px;">✉️ Enviar a: <strong>soporte@tuempresa.com</strong></p>
   </div>
 
 </div>
 
 <script>
   // =====================================================
-  // CONFIGURACIÓN — edita estos 3 valores con los tuyos
+  // CONFIGURACIÓN — CAMBIA ESTO SEGÚN TU EMPRESA
   // =====================================================
-  const EMAILJS_PUBLIC_KEY  = "TU_PUBLIC_KEY";      // en EmailJS: Account > API Keys
-  const EMAILJS_SERVICE_ID  = "TU_SERVICE_ID";      // en EmailJS: Email Services
-  const EMAILJS_TEMPLATE_ID = "TU_TEMPLATE_ID";     // en EmailJS: Email Templates
+  const TI_EMAIL = "jcarias@quattro.com.gt";      // ← Cambiar por el email real de TI
+  const CORREO_PREDETERMINADO = "outlook";        // "outlook" o "gmail" o "mac" o "generic"
   // =====================================================
-
-  emailjs.init(EMAILJS_PUBLIC_KEY);
 
   // Detectar URL bloqueada desde query param (ZIA la inyecta automáticamente)
   const params = new URLSearchParams(window.location.search);
   const blockedUrl = params.get("url") || params.get("blocked_url") || document.referrer || "No disponible";
   document.getElementById("blocked-url").textContent = blockedUrl;
 
+  // Función para obtener el cliente de correo según preferencia
+  function getMailtoLink(to, subject, body) {
+    const encodedSubject = encodeURIComponent(subject);
+    const encodedBody = encodeURIComponent(body);
+    
+    switch(CORREO_PREDETERMINADO) {
+      case "outlook":
+        return `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(to)}&subject=${encodedSubject}&body=${encodedBody}`;
+      case "gmail":
+        return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodedSubject}&body=${encodedBody}`;
+      case "mac":
+        return `mailto:${to}?subject=${encodedSubject}&body=${encodedBody}`;
+      default:
+        return `mailto:${to}?subject=${encodedSubject}&body=${encodedBody}`;
+    }
+  }
+
   document.getElementById("access-form").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    const name    = document.getElementById("user-name").value.trim();
-    const email   = document.getElementById("user-email").value.trim();
-    const reason  = document.getElementById("business-reason").value.trim();
+    const name = document.getElementById("user-name").value.trim();
+    const email = document.getElementById("user-email").value.trim();
+    const reason = document.getElementById("business-reason").value.trim();
     const urgency = document.getElementById("urgency").value;
 
+    // Validaciones
     if (!name || !email || !reason) {
-      document.getElementById("msg-error").textContent = "Por favor completa todos los campos.";
-      document.getElementById("msg-error").style.display = "block";
+      const errorMsg = document.getElementById("msg-error");
+      errorMsg.textContent = "❌ Por favor completa todos los campos.";
+      errorMsg.style.display = "block";
       document.getElementById("msg-success").style.display = "none";
+      document.getElementById("fallback-text").style.display = "none";
       return;
     }
 
-    const btn = document.getElementById("submit-btn");
-    btn.disabled = true;
-    btn.textContent = "Enviando…";
+    // Validar dominio corporativo (opcional pero recomendado)
+    const allowedDomains = ["quattro.com.gt", "quattro.com.sv","s4latam.com"]; // ← CAMBIAR
+    const emailDomain = email.split("@")[1];
+    if (!allowedDomains.includes(emailDomain)) {
+      const errorMsg = document.getElementById("msg-error");
+      errorMsg.textContent = "❌ Usa tu correo corporativo (@tuempresa.com)";
+      errorMsg.style.display = "block";
+      document.getElementById("msg-success").style.display = "none";
+      document.getElementById("fallback-text").style.display = "none";
+      return;
+    }
 
-    const templateParams = {
-      user_name:       name,
-      user_email:      email,
-      business_reason: reason,
-      urgency:         urgency,
-      blocked_url:     blockedUrl,
-      request_time:    new Date().toLocaleString("es-GT", { timeZone: "America/Guatemala" })
-    };
+    const now = new Date().toLocaleString("es-GT", { timeZone: "America/Guatemala" });
+    
+    // Construir el cuerpo del correo
+    const emailBody = `
+===========================================
+SOLICITUD DE ACCESO A SITIO BLOQUEADO
+===========================================
 
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-      .then(function() {
-        document.getElementById("msg-success").style.display = "block";
-        document.getElementById("msg-error").style.display   = "none";
-        document.getElementById("access-form").style.display = "none";
-        btn.disabled = false;
-        btn.textContent = "Enviar solicitud";
-      })
-      .catch(function(err) {
-        console.error("EmailJS error:", err);
-        document.getElementById("msg-error").textContent = "No se pudo enviar la solicitud. Intenta de nuevo o contacta a TI directamente.";
-        document.getElementById("msg-error").style.display = "block";
-        document.getElementById("msg-success").style.display = "none";
-        btn.disabled = false;
-        btn.textContent = "Enviar solicitud";
-      });
+Fecha: ${now}
+Nombre: ${name}
+Correo: ${email}
+Urgencia: ${urgency}
+URL bloqueada: ${blockedUrl}
+
+MOTIVO DE NEGOCIO:
+${reason}
+
+-------------------------------------------
+Este mensaje fue generado automáticamente.
+Por favor, revisar si procede desbloquear el sitio.
+===========================================
+    `.trim();
+
+    const subject = `[Zscaler] Solicitud de acceso - ${name} - ${blockedUrl.substring(0, 60)}`;
+    
+    // Intentar abrir el cliente de correo
+    const mailtoLink = getMailtoLink(TI_EMAIL, subject, emailBody);
+    
+    // Ocultar mensajes anteriores
+    document.getElementById("msg-error").style.display = "none";
+    document.getElementById("msg-success").style.display = "none";
+    document.getElementById("fallback-text").style.display = "none";
+    
+    // Intentar abrir el correo
+    window.location.href = mailtoLink;
+    
+    // Mostrar mensaje de éxito
+    document.getElementById("msg-success").style.display = "block";
+    
+    // Opcional: guardar el cuerpo en el fallback por si no funciona
+    document.getElementById("fallback-content").innerHTML = emailBody.replace(/\n/g, '<br>');
+    
+    // Si después de 2 segundos el usuario no pudo abrir el correo, mostrar fallback
+    setTimeout(() => {
+      // Solo mostrar fallback si el usuario hace clic en algún lado
+      // (por simplicidad, lo dejamos disponible)
+    }, 200);
+    
+    // Limpiar formulario opcionalmente
+    // document.getElementById("access-form").reset();
+    
+    // Mostrar opción de copiar texto por si acaso
+    setTimeout(() => {
+      const fallbackDiv = document.getElementById("fallback-text");
+      if (fallbackDiv.style.display !== "block") {
+        fallbackDiv.style.display = "block";
+        fallbackDiv.style.marginTop = "1rem";
+      }
+    }, 1000);
   });
+  
+  // Función para copiar texto al portapapeles (mejora UX)
+  function copyFallbackText() {
+    const text = document.getElementById("fallback-content").innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const copyBtn = document.getElementById("copy-btn");
+      if (copyBtn) {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = "✓ Copiado!";
+        setTimeout(() => copyBtn.textContent = originalText, 2000);
+      }
+    });
+  }
+  
+  // Agregar botón de copiar dinámicamente si existe fallback
+  const observer = new MutationObserver(() => {
+    const fallback = document.getElementById("fallback-text");
+    if (fallback && fallback.style.display === "block" && !document.getElementById("copy-btn")) {
+      const btn = document.createElement("button");
+      btn.id = "copy-btn";
+      btn.textContent = "📋 Copiar texto";
+      btn.style.marginTop = "8px";
+      btn.style.background = "#666";
+      btn.onclick = copyFallbackText;
+      fallback.appendChild(btn);
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 </script>
 
 </body>
